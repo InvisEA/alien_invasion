@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 class Settings():
-	"""Class for saving all settings of Alien Invasion game."""
+	"""Class for saving all settings of Human Invasion game."""
 
 	def __init__(self):
 		"""Initializes game settings."""
