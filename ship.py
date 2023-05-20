@@ -10,6 +10,10 @@ class Ship():
 
 		# Loads image of the ship and gets rectangle.
 		self.image = pygame.image.load('images/spaceship.png').convert_alpha()
+		# rescale the image of the ship
+		w = self.image.get_width()
+		h = self.image.get_height()
+		self.image = pygame.transform.scale(self.image, (w * 0.15, h * 0.15))
 		self.rect = self.image.get_rect()
 		# New spaceship appears on the bottom border of the screen.
 		self.rect.midbottom = self.screen_rect.midbottom
