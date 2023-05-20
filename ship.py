@@ -9,7 +9,7 @@ class Ship():
 		self.screen_rect = hi_game.screen.get_rect()
 
 		# Loads image of the ship and gets rectangle.
-		self.image = pygame.image.load('images/spaceship.png')
+		self.image = pygame.image.load('images/spaceship.png').convert()
 		self.rect = self.image.get_rect()
 		# New spaceship appears on the bottom border of the screen.
 		self.rect.midbottom = self.screen_rect.midbottom
