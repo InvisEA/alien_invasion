@@ -4,6 +4,7 @@ import sys
 
 import pygame
 from settings import Settings
+from ship import Ship
 
 class HumanInvasion:
 	"""Class for resources and game behaviour handling."""
@@ -16,6 +17,8 @@ class HumanInvasion:
 			(self.settings.screen_width, self.settings.screen_height))
 		pygame.display.set_caption("Human Invasion")
 
+		self.ship = Ship(self)
+
 	def run_game(self):
 		"""Launch main cycle of the game."""
 		while True:
@@ -26,6 +29,8 @@ class HumanInvasion:
 
 			# filling the color to background in every iteration
 			self.screen.fill(self.settings.bg_color)
+			# drawing the alien starship
+			self.ship.blitme()
 
 			# Displaying last drawn screen.
 			pygame.display.flip()
