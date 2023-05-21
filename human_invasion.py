@@ -23,20 +23,22 @@ class HumanInvasion:
 		"""Launch main cycle of the game."""
 		while True:
 			self._check_events()
-
-			# filling the color to background in every iteration
-			self.screen.fill(self.settings.bg_color)
-			# drawing the alien starship
-			self.ship.blitme()
-
-			# Displaying last drawn screen.
-			pygame.display.flip()
-
+			self._update_screen()
+			
 	def _check_events(self):
 		# Monitoring events of keyboard and mouse.
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				sys.exit()
+
+	def _update_screen(self):
+		# filling the color to background in every iteration
+		self.screen.fill(self.settings.bg_color)
+		# drawing the alien starship
+		self.ship.blitme()
+		# Displaying last drawn screen.
+		pygame.display.flip()
+
 
 if __name__ == '__main__':
 	# create instance and launch the game
