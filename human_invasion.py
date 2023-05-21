@@ -22,10 +22,7 @@ class HumanInvasion:
 	def run_game(self):
 		"""Launch main cycle of the game."""
 		while True:
-			# Monitoring events of keyboard and mouse.
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					sys.exit()
+			self._check_events()
 
 			# filling the color to background in every iteration
 			self.screen.fill(self.settings.bg_color)
@@ -34,6 +31,12 @@ class HumanInvasion:
 
 			# Displaying last drawn screen.
 			pygame.display.flip()
+
+	def _check_events(self):
+		# Monitoring events of keyboard and mouse.
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				sys.exit()
 
 if __name__ == '__main__':
 	# create instance and launch the game
