@@ -6,6 +6,7 @@ class Ship():
 	"""Class for controlling the ship."""
 	def __init__(self, hi_game):
 		self.screen = hi_game.screen
+		self.settings = hi_game.settings
 		self.screen_rect = hi_game.screen.get_rect()
 
 		# Loads image of the ship and gets rectangle.
@@ -20,6 +21,9 @@ class Ship():
 		# New spaceship appears on the bottom border of the screen.
 		self.rect.midbottom = self.screen_rect.midbottom
 
+		# Saving float coordinate of the center of the ship.
+		self.x = float(self.rect.x)
+
 		# flag that tracks moving
 		self.moving_right = False
 		self.moving_left = False
@@ -32,6 +36,8 @@ class Ship():
 	def update(self):
 		"""Updates the position of the ship with respect to certain flag."""
 		if self.moving_right:
-			self.rect.x += 1
+			self.x += self.settings.ship_speed
 		if self.moving_left:
-			self.rect.x -= 1
+			self.x -= self.settings.ship_speed
+
+		self.rect.x = self.x
