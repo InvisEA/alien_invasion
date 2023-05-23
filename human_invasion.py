@@ -44,6 +44,8 @@ class HumanInvasion:
 		elif event.key == pygame.K_LEFT:
 			# Setting a flag for moving the ship to the left.
 			self.ship.moving_left = True
+		elif event.key == pygame.K_ESCAPE:
+			sys.exit()
 
 	def _check_keyup_events(self, event):
 		"""Reacts on releasing buttons."""
