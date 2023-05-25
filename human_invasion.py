@@ -29,6 +29,13 @@ class HumanInvasion:
 			self.ship.update()
 			# will cause every bullet in the sprite update its position
 			self.bullets.update()
+
+			# deleting bullets came out from the screen
+			for bullet in self.bullets.copy():
+				if bullet.rect.bottom <= 0:
+					self.bullets.remove(bullet)
+			# print(len(self.bullets))
+
 			self._update_screen()
 			
 	def _check_events(self):
