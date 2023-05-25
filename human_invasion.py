@@ -5,6 +5,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 class HumanInvasion:
 	"""Class for resources and game behaviour handling."""
@@ -13,17 +14,21 @@ class HumanInvasion:
 		pygame.init()
 		self.settings = Settings()
 
-		self.screen = pygame.display.set_mode(
-			(self.settings.screen_width, self.settings.screen_height))
+		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+		self.settings.screen_width = self.screen.get_rect().width
+		self.settings.screen_height = self.screen.get_rect().height
 		pygame.display.set_caption("Human Invasion")
 
 		self.ship = Ship(self)
+		self.bullets = pygame.sprite.Group()
 
 	def run_game(self):
 		"""Launch main cycle of the game."""
 		while True:
 			self._check_events()
 			self.ship.update()
+			# will cause every bullet in the sprite update its position
+			self.bullets.update()
 			self._update_screen()
 			
 	def _check_events(self):
@@ -44,6 +49,8 @@ class HumanInvasion:
 		elif event.key == pygame.K_LEFT:
 			# Setting a flag for moving the ship to the left.
 			self.ship.moving_left = True
+		elif event.key == pygame.K_SPACE:
+			self._fire_bullet()
 		elif event.key == pygame.K_ESCAPE:
 			sys.exit()
 
@@ -54,16 +61,23 @@ class HumanInvasion:
 		elif event.key == pygame.K_LEFT:
 			self.ship.moving_left = False
 
+	def _fire_bullet(self):
+		"""Creates a new bullet and adds it to the bullets group."""
+		new_bullet = Bullet(self)
+		self.bullets.add(new_bullet)
+
 	def _update_screen(self):
 		# filling the color to background in every iteration
 		self.screen.fill(self.settings.bg_color)
 		# drawing the alien starship
 		self.ship.blitme()
+		for bullet in self.bullets.sprites():
+			bullet.draw_bullet()
 		# Displaying last drawn screen.
 		pygame.display.flip()
 
 
 if __name__ == '__main__':
 	# create instance and launch the game
-	ai = HumanInvasion()
-	ai.run_game()
+	hi = HumanInvasion()
+	hi.run_game()
