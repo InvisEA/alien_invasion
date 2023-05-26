@@ -11,6 +11,9 @@ class Invader(Sprite):
 
 		# loads the image of invader and sets his rect attribute."""
 		self.image = pygame.image.load('images/humship.png')
+		w = self.image.get_width()
+		h = self.image.get_height()
+		self.image = pygame.transform.scale(self.image, (w * 0.1, h * 0.1))
 		self.rect = self.image.get_rect()
 
 		# every new invader appears in the top left side of the screen.
@@ -19,4 +22,4 @@ class Invader(Sprite):
 
 		# saves precise horizontal position of the invader
 		self.x = float(self.rect.x)
-		
+
