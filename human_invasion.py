@@ -27,15 +27,7 @@ class HumanInvasion:
 		while True:
 			self._check_events()
 			self.ship.update()
-			# will cause every bullet in the sprite update its position
-			self.bullets.update()
-
-			# deleting bullets came out from the screen
-			for bullet in self.bullets.copy():
-				if bullet.rect.bottom <= 0:
-					self.bullets.remove(bullet)
-			# print(len(self.bullets))
-
+			self._update_bullets()
 			self._update_screen()
 			
 	def _check_events(self):
@@ -70,8 +62,18 @@ class HumanInvasion:
 
 	def _fire_bullet(self):
 		"""Creates a new bullet and adds it to the bullets group."""
-		new_bullet = Bullet(self)
-		self.bullets.add(new_bullet)
+		if len(self.bullets) < self.settings.bullets_allowed:
+			new_bullet = Bullet(self)
+			self.bullets.add(new_bullet)
+
+	def _update_bullets(self):
+		# will cause every bullet in the sprite update its position
+		self.bullets.update()
+
+		# deleting bullets came out from the screen
+		for bullet in self.bullets.copy():
+			if bullet.rect.bottom <= 0:
+				self.bullets.remove(bullet)
 
 	def _update_screen(self):
 		# filling the color to background in every iteration
