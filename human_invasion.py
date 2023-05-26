@@ -6,6 +6,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from invader import Invader
 
 class HumanInvasion:
 	"""Class for resources and game behaviour handling."""
@@ -21,6 +22,9 @@ class HumanInvasion:
 
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
+		self.invaders = pygame.sprite.Group()
+
+		self._create_fleet()
 
 	def run_game(self):
 		"""Launch main cycle of the game."""
@@ -31,7 +35,7 @@ class HumanInvasion:
 			self._update_screen()
 			
 	def _check_events(self):
-		# Monitoring events of keyboard and mouse.
+		"""Monitoring events of keyboard and mouse."""
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				sys.exit()
@@ -67,6 +71,7 @@ class HumanInvasion:
 			self.bullets.add(new_bullet)
 
 	def _update_bullets(self):
+		"""Updates positions of bullets and delete old bullets."""
 		# will cause every bullet in the sprite update its position
 		self.bullets.update()
 
@@ -75,6 +80,12 @@ class HumanInvasion:
 			if bullet.rect.bottom <= 0:
 				self.bullets.remove(bullet)
 
+	def _create_fleet(self):
+		"""Creates invaders fleet."""
+		# creates single invader.
+		invader = Invader(self)
+		self.invaders.add(invader)
+
 	def _update_screen(self):
 		# filling the color to background in every iteration
 		self.screen.fill(self.settings.bg_color)
@@ -82,6 +93,7 @@ class HumanInvasion:
 		self.ship.blitme()
 		for bullet in self.bullets.sprites():
 			bullet.draw_bullet()
+		self.invaders.draw(self.screen)
 		# Displaying last drawn screen.
 		pygame.display.flip()
 
