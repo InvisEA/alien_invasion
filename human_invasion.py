@@ -84,20 +84,28 @@ class HumanInvasion:
 		"""Creates invaders fleet."""
 		# creates single invader.
 		invader = Invader(self)
-		invader_width = invader.rect.width
+		invader_width, invader_height = invader.rect.size
+		# defines number of invaders accross columns
 		available_space_x = self.settings.screen_width - 2 * invader_width
 		number_invaders_x = available_space_x // (2 * invader_width)
+		# defines number of invaders accross rows
+		ship_height = self.ship.rect.height
+		available_space_y = self.settings.screen_height - 3 * invader_height - ship_height
+		number_rows = available_space_y // (2 * invader_height)
 
 		# creation of the first row of the human invaders
-		for invader_number in range(number_invaders_x):
-			self._create_invader(invader_number)
+		for row_number in range(number_rows):
+			for invader_number in range(number_invaders_x):
+				self._create_invader(invader_number, row_number)
 
-	def _create_invader(self, invader_number):
+	def _create_invader(self, invader_number, row_number):
 		"""Creation of one invader in the row."""
 		invader = Invader(self)
-		invader_width = invader.rect.width
+		invader_width, invader_height = invader.rect.size
 		invader.x = invader_width + 2 * invader_width * invader_number
 		invader.rect.x = invader.x
+		invader.y = invader_height + 2 * invader_height * row_number
+		invader.rect.y = invader.y
 		self.invaders.add(invader)
 
 	def _update_screen(self):
