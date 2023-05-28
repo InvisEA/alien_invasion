@@ -7,6 +7,8 @@ from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from invader import Invader
+from background import Star
+from random import randint
 
 class HumanInvasion:
 	"""Class for resources and game behaviour handling."""
@@ -21,6 +23,8 @@ class HumanInvasion:
 		pygame.display.set_caption("Human Invasion")
 
 		self.ship = Ship(self)
+		self.stars = pygame.sprite.Group()
+		self._create_stars_bg()
 		self.bullets = pygame.sprite.Group()
 		self.invaders = pygame.sprite.Group()
 
@@ -33,7 +37,23 @@ class HumanInvasion:
 			self.ship.update()
 			self._update_bullets()
 			self._update_screen()
-			
+	
+	def _create_stars_bg(self):
+		star = Star(self)
+		star_width, star_height = star.rect.size
+		num_stars_x = self.settings.screen_width // star_width
+		num_stars_y = self.settings.screen_height // star_height
+
+		for row_num in range(num_stars_y):
+			for col_num in range(num_stars_x):
+				star = Star(self)
+				star.x = 0.5 * star_width + 2 * star_width * col_num
+				star.y = 0.5 * star_height + 2 * star_height * row_num
+				star.rect.x = star.x
+				star.rect.y = star.y
+				self.stars.add(star)
+
+
 	def _check_events(self):
 		"""Monitoring events of keyboard and mouse."""
 		for event in pygame.event.get():
@@ -90,7 +110,8 @@ class HumanInvasion:
 		number_invaders_x = available_space_x // (2 * invader_width)
 		# defines number of invaders accross rows
 		ship_height = self.ship.rect.height
-		available_space_y = self.settings.screen_height - 3 * invader_height - ship_height
+		available_space_y = (self.settings.screen_height - 3 * invader_height 
+			- ship_height)
 		number_rows = available_space_y // (2 * invader_height)
 
 		# creation of the first row of the human invaders
@@ -111,6 +132,7 @@ class HumanInvasion:
 	def _update_screen(self):
 		# filling the color to background in every iteration
 		self.screen.fill(self.settings.bg_color)
+		self.stars.draw(self.screen)
 		# drawing the alien starship
 		self.ship.blitme()
 		for bullet in self.bullets.sprites():
