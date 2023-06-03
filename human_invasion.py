@@ -8,7 +8,7 @@ from ship import Ship
 from bullet import Bullet
 from invader import Invader
 from background import Star
-from random import randint
+from random import random, uniform, randint
 
 class HumanInvasion:
 	"""Class for resources and game behaviour handling."""
@@ -47,10 +47,15 @@ class HumanInvasion:
 		for row_num in range(num_stars_y):
 			for col_num in range(num_stars_x):
 				star = Star(self)
-				star.x = 0.5 * star_width + 2 * star_width * col_num
-				star.y = 0.5 * star_height + 2 * star_height * row_num
+				pertubation_x = randint(-15, 15)
+				star.x = 0.5 * star_width + 2 * star_width * col_num + pertubation_x
+				pertubation_y = randint(-15, 15)
+				star.y = 0.5 * star_height + 2 * star_height * row_num + pertubation_y
 				star.rect.x = star.x
 				star.rect.y = star.y
+				factor = uniform(0.1, 1)
+				star.image = pygame.transform.scale(star.image, 
+						(star.W * factor, star.H * factor))
 				self.stars.add(star)
 
 
