@@ -36,6 +36,7 @@ class HumanInvasion:
 			self._check_events()
 			self.ship.update()
 			self._update_bullets()
+			self._update_invaders()
 			self._update_screen()
 	
 	def _create_stars_bg(self):
@@ -53,7 +54,7 @@ class HumanInvasion:
 				star.y = 0.5 * star_height + 2 * star_height * row_num + pertubation_y
 				star.rect.x = star.x
 				star.rect.y = star.y
-				factor = uniform(0.1, 1)
+				factor = uniform(0.1, 0.9)
 				star.image = pygame.transform.scale(star.image, 
 						(star.W * factor, star.H * factor))
 				self.stars.add(star)
@@ -133,6 +134,24 @@ class HumanInvasion:
 		invader.y = invader_height + 2 * invader_height * row_number
 		invader.rect.y = invader.y
 		self.invaders.add(invader)
+
+	def _check_fleet_edges(self):
+		"""Reacts on reaching a border of the screen of any invader."""
+		for invader in self.invaders.sprites():
+			if invader.check_edges():
+				self._change_fleet_direction()
+				break
+
+	def _change_fleet_direction(self):
+		"""Drops the fleet and changes its direction."""
+		for invader in self.invaders.sprites():
+			invader.rect.y += self.settings.fleet_drop_speed
+		self.settings.fleet_direction *= -1
+
+	def _update_invaders(self):
+		"""Updates positions of all invaders on the screen."""
+		self._check_fleet_edges()
+		self.invaders.update()
 
 	def _update_screen(self):
 		# filling the color to background in every iteration

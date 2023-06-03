@@ -8,6 +8,8 @@ class Invader(Sprite):
 		"""Initializes single invader and sets his initial position."""
 		super().__init__()
 		self.screen = hi_game.screen
+		self.settings = hi_game.settings
+		self.screen_rect = hi_game.screen.get_rect()
 
 		# loads the image of invader and sets his rect attribute."""
 		self.image = pygame.image.load('images/humship.png')
@@ -24,4 +26,14 @@ class Invader(Sprite):
 
 		# saves precise horizontal position of the invader
 		self.x = float(self.rect.x)
+
+	def check_edges(self):
+		"""Returns True, if invader reached a border of the screen."""
+		if self.rect.right >= self.screen_rect.right or self.rect.left <= 0:
+			return True
+
+	def update(self):
+		"""Moves invader ship to the right."""
+		self.x += self.settings.invader_speed * self.settings.fleet_direction
+		self.rect.x = self.x
 
