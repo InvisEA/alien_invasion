@@ -10,6 +10,8 @@ class Star(Sprite):
 		w = self.image.get_width()
 		h = self.image.get_height()
 		self.image = pygame.transform.scale(self.image, (w * 0.07, h * 0.07))
+		self.W = self.image.get_width()
+		self.H = self.image.get_height()
 		self.rect = self.image.get_rect()
 
 		self.rect.x = self.rect.width
