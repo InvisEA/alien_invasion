@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-
+import argparse
 import pygame
 from settings import Settings
 from ship import Ship
@@ -16,7 +16,10 @@ class HumanInvasion:
 		"""Initializes the game and creates game resources."""
 		pygame.init()
 		self.settings = Settings()
-
+		if args.test:
+			self.settings.bullet_width = 500
+			self.settings.bullet_speed = 5
+			self.settings.ship_speed = 3
 		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 		self.settings.screen_width = self.screen.get_rect().width
 		self.settings.screen_height = self.screen.get_rect().height
@@ -106,10 +109,19 @@ class HumanInvasion:
 			if bullet.rect.bottom <= 0:
 				self.bullets.remove(bullet)
 
-		# checks hits of invaders
+		self._check_bullet_invader_collisions()
+
+
+	def _check_bullet_invader_collisions(self):
+		"""checks hits of invaders."""
 		# if hit is registered, delete the bullet and the invader.
 		collisions = pygame.sprite.groupcollide(
 			self.bullets, self.invaders, True, True)
+
+		if not self.invaders:
+			# delete existing bullets and create a new fleet.
+			self.bullets.empty()
+			self._create_fleet()
 
 
 	def _create_fleet(self):
@@ -173,6 +185,11 @@ class HumanInvasion:
 
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--test", help="if specified game is launched in\
+						the test mode",
+						action="store_true")
+	args = parser.parse_args()
 	# create instance and launch the game
 	hi = HumanInvasion()
 	hi.run_game()
