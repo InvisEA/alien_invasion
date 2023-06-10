@@ -106,6 +106,12 @@ class HumanInvasion:
 			if bullet.rect.bottom <= 0:
 				self.bullets.remove(bullet)
 
+		# checks hits of invaders
+		# if hit is registered, delete the bullet and the invader.
+		collisions = pygame.sprite.groupcollide(
+			self.bullets, self.invaders, True, True)
+
+
 	def _create_fleet(self):
 		"""Creates invaders fleet."""
 		# creates single invader.
