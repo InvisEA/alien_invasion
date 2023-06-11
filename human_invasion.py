@@ -23,6 +23,7 @@ class HumanInvasion:
 			self.settings.bullet_width = 500
 			self.settings.bullet_speed = 5
 			self.settings.ship_speed = 3
+			self.settings.invader_speed = 10
 		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 		self.settings.screen_width = self.screen.get_rect().width
 		self.settings.screen_height = self.screen.get_rect().height
@@ -194,7 +195,7 @@ class HumanInvasion:
 	def _ship_hit(self):
 		"""Handles collision between alien and invader."""
 		# decrease amount of avaiable ships (lives)
-		self.stats.ship_left -= 1
+		self.stats.ships_left -= 1
 
 		# Deletes all bullets and invaders from the screen
 		self.invaders.empty()
