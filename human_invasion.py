@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import sys
+from time import sleep
 import argparse
 import pygame
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from invader import Invader
@@ -12,6 +14,7 @@ from random import random, uniform, randint
 
 class HumanInvasion:
 	"""Class for resources and game behaviour handling."""
+
 	def __init__(self):
 		"""Initializes the game and creates game resources."""
 		pygame.init()
@@ -25,6 +28,9 @@ class HumanInvasion:
 		self.settings.screen_height = self.screen.get_rect().height
 		pygame.display.set_caption("Human Invasion")
 
+		# creates instance for storing game statistics.
+		self.stats = GameStats(self)
+
 		self.ship = Ship(self)
 		self.stars = pygame.sprite.Group()
 		self._create_stars_bg()
@@ -32,6 +38,7 @@ class HumanInvasion:
 		self.invaders = pygame.sprite.Group()
 
 		self._create_fleet()
+
 
 	def run_game(self):
 		"""Launch main cycle of the game."""
@@ -41,6 +48,7 @@ class HumanInvasion:
 			self._update_bullets()
 			self._update_invaders()
 			self._update_screen()
+
 	
 	def _create_stars_bg(self):
 		star = Star(self)
@@ -73,6 +81,7 @@ class HumanInvasion:
 			elif event.type == pygame.KEYUP:
 				self._check_keyup_events(event)
 
+
 	def _check_keydown_events(self, event):
 		"""Reacts on pressing buttons."""
 		if event.key == pygame.K_RIGHT:
@@ -86,6 +95,7 @@ class HumanInvasion:
 		elif event.key == pygame.K_ESCAPE:
 			sys.exit()
 
+
 	def _check_keyup_events(self, event):
 		"""Reacts on releasing buttons."""
 		if event.key == pygame.K_RIGHT:
@@ -93,11 +103,13 @@ class HumanInvasion:
 		elif event.key == pygame.K_LEFT:
 			self.ship.moving_left = False
 
+
 	def _fire_bullet(self):
 		"""Creates a new bullet and adds it to the bullets group."""
 		if len(self.bullets) < self.settings.bullets_allowed:
 			new_bullet = Bullet(self)
 			self.bullets.add(new_bullet)
+
 
 	def _update_bullets(self):
 		"""Updates positions of bullets and delete old bullets."""
@@ -143,6 +155,7 @@ class HumanInvasion:
 			for invader_number in range(number_invaders_x):
 				self._create_invader(invader_number, row_number)
 
+
 	def _create_invader(self, invader_number, row_number):
 		"""Creation of one invader in the row."""
 		invader = Invader(self)
@@ -153,6 +166,7 @@ class HumanInvasion:
 		invader.rect.y = invader.y
 		self.invaders.add(invader)
 
+
 	def _check_fleet_edges(self):
 		"""Reacts on reaching a border of the screen of any invader."""
 		for invader in self.invaders.sprites():
@@ -160,16 +174,39 @@ class HumanInvasion:
 				self._change_fleet_direction()
 				break
 
+
 	def _change_fleet_direction(self):
 		"""Drops the fleet and changes its direction."""
 		for invader in self.invaders.sprites():
 			invader.rect.y += self.settings.fleet_drop_speed
 		self.settings.fleet_direction *= -1
 
+
 	def _update_invaders(self):
 		"""Updates positions of all invaders on the screen."""
 		self._check_fleet_edges()
 		self.invaders.update()
+		# check alien-invaders collision
+		if pygame.sprite.spritecollideany(self.ship, self.invaders):
+			self._ship_hit()
+
+
+	def _ship_hit(self):
+		"""Handles collision between alien and invader."""
+		# decrease amount of avaiable ships (lives)
+		self.stats.ship_left -= 1
+
+		# Deletes all bullets and invaders from the screen
+		self.invaders.empty()
+		self.bullets.empty()
+
+		# creates new fleet and place the alien ship to the center
+		self._create_fleet()
+		self.ship.center_ship()
+
+		# creates a little pause before a new round
+		sleep(0.5)
+
 
 	def _update_screen(self):
 		# filling the color to background in every iteration
