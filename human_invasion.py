@@ -191,6 +191,9 @@ class HumanInvasion:
 		if pygame.sprite.spritecollideany(self.ship, self.invaders):
 			self._ship_hit()
 
+		# checks if any of invaders reaches the bottom of the screen
+		self._check_invaders_bottom()
+
 
 	def _ship_hit(self):
 		"""Handles collision between alien and invader."""
@@ -207,6 +210,14 @@ class HumanInvasion:
 
 		# creates a little pause before a new round
 		sleep(0.5)
+
+
+	def _check_invaders_bottom(self):
+		"""Check if invaders reached bottom part of the screen."""
+		for invader in self.invaders:
+			if invader.rect.bottom >= self.settings.screen_height:
+				self._ship_hit()
+				break
 
 
 	def _update_screen(self):
