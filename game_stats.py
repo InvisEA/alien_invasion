@@ -6,6 +6,10 @@ class GameStats():
 		self.settings = hi_game.settings
 		self.reset_stats()
 
+		# flag if game is in active state
+		self.game_active = True
+
+
 	def reset_stats(self):
 		"""Initializes statistic changing during the game."""
 		self.ships_left = self.settings.ship_limit

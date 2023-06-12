@@ -23,7 +23,7 @@ class HumanInvasion:
 			self.settings.bullet_width = 500
 			self.settings.bullet_speed = 5
 			self.settings.ship_speed = 3
-			self.settings.invader_speed = 10
+			self.settings.invader_speed = 20
 		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 		self.settings.screen_width = self.screen.get_rect().width
 		self.settings.screen_height = self.screen.get_rect().height
@@ -45,9 +45,10 @@ class HumanInvasion:
 		"""Launch main cycle of the game."""
 		while True:
 			self._check_events()
-			self.ship.update()
-			self._update_bullets()
-			self._update_invaders()
+			if self.stats.game_active:
+				self.ship.update()
+				self._update_bullets()
+				self._update_invaders()
 			self._update_screen()
 
 	
@@ -198,18 +199,21 @@ class HumanInvasion:
 	def _ship_hit(self):
 		"""Handles collision between alien and invader."""
 		# decrease amount of avaiable ships (lives)
-		self.stats.ships_left -= 1
+		if self.stats.ships_left > 0:
+			self.stats.ships_left -= 1
 
-		# Deletes all bullets and invaders from the screen
-		self.invaders.empty()
-		self.bullets.empty()
+			# Deletes all bullets and invaders from the screen
+			self.invaders.empty()
+			self.bullets.empty()
 
-		# creates new fleet and place the alien ship to the center
-		self._create_fleet()
-		self.ship.center_ship()
+			# creates new fleet and place the alien ship to the center
+			self._create_fleet()
+			self.ship.center_ship()
 
-		# creates a little pause before a new round
-		sleep(0.5)
+			# creates a little pause before a new round
+			sleep(0.5)
+		else:
+			self.stats.game_active = False
 
 
 	def _check_invaders_bottom(self):
