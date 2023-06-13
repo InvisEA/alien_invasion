@@ -95,20 +95,24 @@ class HumanInvasion:
 		"""Launches a new game after pressing Play button."""
 		button_clicked = self.play_button.rect.collidepoint(mouse_pos)
 		if button_clicked and not self.stats.game_active:
-			# Resets the whole game to initial state
-			self.stats.reset_stats()
-			self.stats.game_active = True
-
-			# Clears invaders and bullets
-			self.invaders.empty()
-			self.bullets.empty()
-
-			# Creates new fleet and places the ship on the center of the screen
-			self._create_fleet()
-			self.ship.center_ship()
+			self._start_game()
 
 			# mouse pointer is hidden
 			pygame.mouse.set_visible(False)
+
+
+	def _start_game(self):
+		# Resets the whole game to initial state
+		self.stats.reset_stats()
+		self.stats.game_active = True
+
+		# Clears invaders and bullets
+		self.invaders.empty()
+		self.bullets.empty()
+
+		# Creates new fleet and places the ship on the center of the screen
+		self._create_fleet()
+		self.ship.center_ship()
 
 
 	def _check_keydown_events(self, event):
@@ -121,6 +125,9 @@ class HumanInvasion:
 			self.ship.moving_left = True
 		elif event.key == pygame.K_SPACE:
 			self._fire_bullet()
+		elif event.key == pygame.K_RETURN:
+			if not self.stats.game_active:
+				self._start_game()
 		elif event.key == pygame.K_ESCAPE:
 			sys.exit()
 
