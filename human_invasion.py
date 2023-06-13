@@ -6,6 +6,7 @@ import argparse
 import pygame
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from invader import Invader
@@ -39,6 +40,9 @@ class HumanInvasion:
 		self.invaders = pygame.sprite.Group()
 
 		self._create_fleet()
+
+		# Creates Play button
+		self.play_button = Button(self, "Play")
 
 
 	def run_game(self):
@@ -82,6 +86,29 @@ class HumanInvasion:
 				self._check_keydown_events(event)
 			elif event.type == pygame.KEYUP:
 				self._check_keyup_events(event)
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				mouse_pos = pygame.mouse.get_pos()
+				self._check_play_button(mouse_pos)
+
+
+	def _check_play_button(self, mouse_pos):
+		"""Launches a new game after pressing Play button."""
+		button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+		if button_clicked and not self.stats.game_active:
+			# Resets the whole game to initial state
+			self.stats.reset_stats()
+			self.stats.game_active = True
+
+			# Clears invaders and bullets
+			self.invaders.empty()
+			self.bullets.empty()
+
+			# Creates new fleet and places the ship on the center of the screen
+			self._create_fleet()
+			self.ship.center_ship()
+
+			# mouse pointer is hidden
+			pygame.mouse.set_visible(False)
 
 
 	def _check_keydown_events(self, event):
@@ -214,6 +241,7 @@ class HumanInvasion:
 			sleep(0.5)
 		else:
 			self.stats.game_active = False
+			pygame.mouse.set_visible(True)
 
 
 	def _check_invaders_bottom(self):
@@ -233,6 +261,11 @@ class HumanInvasion:
 		for bullet in self.bullets.sprites():
 			bullet.draw_bullet()
 		self.invaders.draw(self.screen)
+
+		# Play button is shown only if game is inactive
+		if not self.stats.game_active:
+			self.play_button.draw_button()
+
 		# Displaying last drawn screen.
 		pygame.display.flip()
 
