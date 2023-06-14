@@ -24,7 +24,8 @@ class HumanInvasion:
 			self.settings.bullet_width = 500
 			self.settings.bullet_speed = 5
 			self.settings.ship_speed = 3
-			self.settings.invader_speed = 20
+			self.settings.invader_speed = 10
+			self.settings.scaleup_speed = 2
 		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 		self.settings.screen_width = self.screen.get_rect().width
 		self.settings.screen_height = self.screen.get_rect().height
@@ -95,6 +96,8 @@ class HumanInvasion:
 		"""Launches a new game after pressing Play button."""
 		button_clicked = self.play_button.rect.collidepoint(mouse_pos)
 		if button_clicked and not self.stats.game_active:
+			# resets game settings
+			self.settings.initialize_dynamic_settings()
 			self._start_game()
 
 			# mouse pointer is hidden
@@ -170,6 +173,7 @@ class HumanInvasion:
 			# delete existing bullets and create a new fleet.
 			self.bullets.empty()
 			self._create_fleet()
+			self.settings.increase_speed()
 
 
 	def _create_fleet(self):
