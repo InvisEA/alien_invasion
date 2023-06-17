@@ -5,6 +5,7 @@ from time import sleep
 import argparse
 import pygame
 from settings import Settings
+from settings_button import SettingsButton
 from game_stats import GameStats
 from button import Button
 from ship import Ship
@@ -20,15 +21,19 @@ class HumanInvasion:
 		"""Initializes the game and creates game resources."""
 		pygame.init()
 		self.settings = Settings()
+		self.screen = pygame.display.set_mode((self.settings.screen_width, 
+					 self.settings.screen_height))
+		# self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+		# self.settings = Settings(self)
+		self.screen_rect = self.screen.get_rect()
+		self.settings.screen_width = self.screen_rect.width
+		self.settings.screen_height = self.screen_rect.height
 		if args.test:
 			self.settings.bullet_width = 500
 			self.settings.bullet_speed = 5
 			self.settings.ship_speed = 3
 			self.settings.invader_speed = 10
 			self.settings.scaleup_speed = 2
-		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-		self.settings.screen_width = self.screen.get_rect().width
-		self.settings.screen_height = self.screen.get_rect().height
 		pygame.display.set_caption("Human Invasion")
 
 		# creates instance for storing game statistics.
@@ -44,6 +49,14 @@ class HumanInvasion:
 
 		# Creates Play button
 		self.play_button = Button(self, "Play")
+		# Creates settings button
+		self.settings_button = SettingsButton(self)
+		# draw 3 lvls of difficulty buttons
+		self.easy = Button(self, "Easy")
+		self.medium = Button(self, "Medium")
+		self.hard = Button(self, "Hard")
+		# Assign coordinates to difficulty buttons
+		self._assign_coordinates()
 
 
 	def run_game(self):
@@ -78,6 +91,19 @@ class HumanInvasion:
 				self.stars.add(star)
 
 
+	def _assign_coordinates(self):
+		"""Assigns coordinates for Easy, Medium and Hard buttons."""
+		# Calculate available space
+		button_height = self.easy.height
+		x_coord = self.settings.screen_width / 2
+		available_space_y = (self.settings.screen_height - 3 * button_height - 
+			2 * 15)
+		for i, button in enumerate([self.easy, self.medium, self.hard]):
+			button.rect.midtop = (x_coord, (available_space_y / 2 + 
+				1.2 * button_height * i))
+			button.msg_image_rect.center = button.rect.center
+
+
 	def _check_events(self):
 		"""Monitoring events of keyboard and mouse."""
 		for event in pygame.event.get():
@@ -90,18 +116,44 @@ class HumanInvasion:
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				mouse_pos = pygame.mouse.get_pos()
 				self._check_play_button(mouse_pos)
+				self._check_settings_button(mouse_pos)
+				if self.settings.settings_active:
+					self._check_difficulties_buttons(mouse_pos)
 
 
 	def _check_play_button(self, mouse_pos):
 		"""Launches a new game after pressing Play button."""
 		button_clicked = self.play_button.rect.collidepoint(mouse_pos)
-		if button_clicked and not self.stats.game_active:
+		if (button_clicked and not self.stats.game_active and 
+				not self.settings.settings_active):
 			# resets game settings
 			self.settings.initialize_dynamic_settings()
 			self._start_game()
 
 			# mouse pointer is hidden
 			pygame.mouse.set_visible(False)
+
+
+	def _check_settings_button(self, mouse_pos):
+		"""Launches difficulty menu."""
+		set_button_clicked = self.settings_button.rect.collidepoint(mouse_pos)
+		if set_button_clicked and not self.stats.game_active:
+			self.settings.settings_active = True
+
+
+	def _check_difficulties_buttons(self, mouse_pos):
+		easy_button_clicked = self.easy.rect.collidepoint(mouse_pos)
+		medium_button_clicked = self.medium.rect.collidepoint(mouse_pos)
+		hard_button_clicked = self.hard.rect.collidepoint(mouse_pos)
+		if easy_button_clicked and not self.stats.game_active:
+			self.settings.initialize_easy_settings()
+			self.settings.settings_active = False
+		elif medium_button_clicked and not self.stats.game_active:
+			self.settings.initialize_medium_settings()
+			self.settings.settings_active = False
+		elif hard_button_clicked and not self.stats.game_active:
+			self.settings.initialize_hard_settings()
+			self.settings.settings_active = False
 
 
 	def _start_game(self):
@@ -275,7 +327,14 @@ class HumanInvasion:
 
 		# Play button is shown only if game is inactive
 		if not self.stats.game_active:
-			self.play_button.draw_button()
+			if not self.settings.settings_active:
+				self.settings_button.draw_button()
+				self.play_button.draw_button()
+			else:
+				self.easy.draw_button()
+				self.medium.draw_button()
+				self.hard.draw_button()
+			
 
 		# Displaying last drawn screen.
 		pygame.display.flip()
