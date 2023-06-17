@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import pygame
+from button import Button
+
 class Settings():
 	"""Class for saving all settings of Human Invasion game."""
 
@@ -27,6 +30,9 @@ class Settings():
 
 		self.initialize_dynamic_settings()
 
+		# if settings menu is active
+		self.settings_active = False
+
 
 	def initialize_dynamic_settings(self):
 		"""Initializes settings changing during the game."""
@@ -37,7 +43,27 @@ class Settings():
 		# fleet_direction = 1 if moving to the right; -1 - to the left
 		self.fleet_direction = 1
 
+
+	def initialize_easy_settings(self):
+		pass
+
+
+	def initialize_medium_settings(self):
+		self.ship_speed = 1.5
+		self.bullet_speed = 3
+		self.invader_speed = 2.0
+
+
+	def initialize_hard_settings(self):
+		self.ship_speed = 2
+		self.bullet_speed = 4
+		self.invader_speed = 5.0
+
+
 	def increase_speed(self):
 		self.ship_speed *= self.speedup_scale
 		self.bullet_speed *= self.speedup_scale
 		self.invader_speed *= self.speedup_scale
+
+
+
