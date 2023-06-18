@@ -17,7 +17,12 @@ class Scoreboard():
 		# font settings for printing the score.
 		self.text_color = (30, 30, 30)
 		self.font = pygame.font.SysFont(None, 48)
-		# Preparation of current and highest scores.
+		# Preparation of current and highest scores, current level and
+		# number of ships left.
+		self.prepare_images()
+
+
+	def prepare_images(self):
 		self.prep_score()
 		self.prep_high_score()
 		self.prep_level()
