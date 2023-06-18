@@ -110,6 +110,7 @@ class HumanInvasion:
 		"""Monitoring events of keyboard and mouse."""
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
+				self.store_record()
 				sys.exit()
 			elif event.type == pygame.KEYDOWN:
 				self._check_keydown_events(event)
@@ -162,8 +163,11 @@ class HumanInvasion:
 		# Resets the whole game to initial state
 		self.stats.reset_stats()
 		self.stats.game_active = True
+		self.load_record()
+		self.sb.prep_high_score()
 		self.sb.prep_score()
 		self.sb.prep_level()
+		self.sb.prep_ships()
 
 		# Clears invaders and bullets
 		self.invaders.empty()
@@ -188,6 +192,7 @@ class HumanInvasion:
 			if not self.stats.game_active:
 				self._start_game()
 		elif event.key == pygame.K_ESCAPE:
+			self.store_record()
 			sys.exit()
 
 
@@ -304,7 +309,9 @@ class HumanInvasion:
 		"""Handles collision between alien and invader."""
 		# decrease amount of avaiable ships (lives)
 		if self.stats.ships_left > 0:
+			# Remove one life and update score panel
 			self.stats.ships_left -= 1
+			self.sb.prep_ships()
 
 			# Deletes all bullets and invaders from the screen
 			self.invaders.empty()
@@ -355,6 +362,16 @@ class HumanInvasion:
 
 		# Displaying last drawn screen.
 		pygame.display.flip()
+
+
+	def store_record(self):
+		with open("record.txt", "w") as file:
+			file.write(str(self.stats.high_score))
+
+
+	def load_record(self):
+		with open("record.txt", "r") as file:
+			self.stats.high_score = int(file.read())
 
 
 if __name__ == '__main__':

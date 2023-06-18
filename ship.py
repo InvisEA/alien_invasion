@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 import pygame
+from pygame.sprite import Sprite
 
-class Ship():
+class Ship(Sprite):
 	"""Class for controlling the ship."""
 	def __init__(self, hi_game):
+		super().__init__()
 		self.screen = hi_game.screen
 		self.settings = hi_game.settings
 		self.screen_rect = hi_game.screen.get_rect()

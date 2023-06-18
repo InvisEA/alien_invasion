@@ -1,10 +1,14 @@
 import pygame.font
+from pygame.sprite import Group
+
+from ship import Ship
 
 class Scoreboard():
 	"""Class for showing game records."""
 
 	def __init__(self, hi_game):
 		"""Initializes attributes of scores counting."""
+		self.hi_game = hi_game
 		self.screen = hi_game.screen
 		self.screen_rect = self.screen.get_rect()
 		self.settings = hi_game.settings
@@ -17,6 +21,7 @@ class Scoreboard():
 		self.prep_score()
 		self.prep_high_score()
 		self.prep_level()
+		self.prep_ships()
 
 
 	def prep_score(self):
@@ -57,11 +62,28 @@ class Scoreboard():
 		self.level_rect.top = self.score_rect.bottom + 10
 
 
+	def prep_ships(self):
+		"""Tells the quantity of ships left."""
+		self.ships = Group()
+		#ship = Ship(self.hi_game)
+
+		for ship_number in range(self.stats.ships_left + 1):
+			ship = Ship(self.hi_game)
+			rect = ship.rect
+			new_rect = rect.scale_by(0.5)
+			ship.image = pygame.transform.scale(ship.image, (new_rect.width, new_rect.height))
+			ship.rect.x = 10 + ship_number * new_rect.width
+			ship.rect.y = 10
+			self.ships.add(ship)
+
+
 	def show_score(self):
-		"""Prints a score, a record and a level to the screen."""
+		"""Prints a score, a record, a level and amount lives left
+		to the screen."""
 		self.screen.blit(self.score_image, self.score_rect)
 		self.screen.blit(self.high_score_image, self.high_score_rect)
 		self.screen.blit(self.level_image, self.level_rect)
+		self.ships.draw(self.screen)
 
 
 	def check_high_score(self):
