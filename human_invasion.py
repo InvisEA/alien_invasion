@@ -164,10 +164,7 @@ class HumanInvasion:
 		self.stats.reset_stats()
 		self.stats.game_active = True
 		self.load_record()
-		self.sb.prep_high_score()
-		self.sb.prep_score()
-		self.sb.prep_level()
-		self.sb.prep_ships()
+		self.sb.prepare_images()
 
 		# Clears invaders and bullets
 		self.invaders.empty()
@@ -237,14 +234,18 @@ class HumanInvasion:
 			self.sb.check_high_score()
 
 		if not self.invaders:
-			# delete existing bullets and create a new fleet.
-			self.bullets.empty()
-			self._create_fleet()
-			self.settings.increase_speed()
+			self._start_new_level()
 
-			# Increases level
-			self.stats.level += 1
-			self.sb.prep_level()
+
+	def _start_new_level(self):
+		# delete existing bullets and create a new fleet.
+		self.bullets.empty()
+		self._create_fleet()
+		self.settings.increase_speed()
+
+		# Increases level
+		self.stats.level += 1
+		self.sb.prep_level()
 
 
 	def _create_fleet(self):
