@@ -7,6 +7,7 @@ import pygame
 from settings import Settings
 from settings_button import SettingsButton
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 from ship import Ship
 from bullet import Bullet
@@ -32,12 +33,13 @@ class HumanInvasion:
 			self.settings.bullet_width = 500
 			self.settings.bullet_speed = 5
 			self.settings.ship_speed = 3
-			self.settings.invader_speed = 10
+			self.settings.invader_speed = 20
 			self.settings.scaleup_speed = 2
 		pygame.display.set_caption("Human Invasion")
 
-		# creates instance for storing game statistics.
+		# creates instance for storing game statistics and results panel.
 		self.stats = GameStats(self)
+		self.sb = Scoreboard(self)
 
 		self.ship = Ship(self)
 		self.stars = pygame.sprite.Group()
@@ -160,6 +162,8 @@ class HumanInvasion:
 		# Resets the whole game to initial state
 		self.stats.reset_stats()
 		self.stats.game_active = True
+		self.sb.prep_score()
+		self.sb.prep_level()
 
 		# Clears invaders and bullets
 		self.invaders.empty()
@@ -221,11 +225,21 @@ class HumanInvasion:
 		collisions = pygame.sprite.groupcollide(
 			self.bullets, self.invaders, True, True)
 
+		if collisions:
+			for invaders in collisions.values():
+				self.stats.score += self.settings.per_invader_points * len(invaders)
+			self.sb.prep_score()
+			self.sb.check_high_score()
+
 		if not self.invaders:
 			# delete existing bullets and create a new fleet.
 			self.bullets.empty()
 			self._create_fleet()
 			self.settings.increase_speed()
+
+			# Increases level
+			self.stats.level += 1
+			self.sb.prep_level()
 
 
 	def _create_fleet(self):
@@ -334,6 +348,9 @@ class HumanInvasion:
 				self.easy.draw_button()
 				self.medium.draw_button()
 				self.hard.draw_button()
+		else:
+			# Prints info about current score
+			self.sb.show_score()
 			
 
 		# Displaying last drawn screen.

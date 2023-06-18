@@ -27,6 +27,8 @@ class Settings():
 
 		# factor of increasing tempo of the game
 		self.speedup_scale = 1.2
+		# cost per invader scale factor
+		self.score_scale = 1.5
 
 		self.initialize_dynamic_settings()
 
@@ -42,6 +44,8 @@ class Settings():
 
 		# fleet_direction = 1 if moving to the right; -1 - to the left
 		self.fleet_direction = 1
+		# Point counting
+		self.per_invader_points = 50
 
 
 	def initialize_easy_settings(self):
@@ -61,9 +65,11 @@ class Settings():
 
 
 	def increase_speed(self):
+		"""Increases speed settings and cost per invader."""
 		self.ship_speed *= self.speedup_scale
 		self.bullet_speed *= self.speedup_scale
 		self.invader_speed *= self.speedup_scale
 
+		self.per_invader_points = int(self.per_invader_points * self.score_scale)
 
 
