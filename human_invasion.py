@@ -371,8 +371,11 @@ class HumanInvasion:
 
 
 	def load_record(self):
-		with open("record.txt", "r") as file:
-			self.stats.high_score = int(file.read())
+		try:
+			with open("record.txt", "r") as file:
+				self.stats.high_score = int(file.read())
+		except FileNotFoundError:
+			print("No record found")
 
 
 if __name__ == '__main__':
